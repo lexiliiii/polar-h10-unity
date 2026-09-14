@@ -1,0 +1,49 @@
+﻿title: Module1Menu_FirstTime
+---
+<<activate_checklist Checklist>>
+
+Virtual Instructor: Welcome to the Ergonomic Risk Lab. Here, you'll observe real construction tasks and evaluate their risks using ergonomic tools. Let's begin.
+
+<<toggle_reba_demo Module1MenuBootstrapper true>>
+Virtual Instructor: To evaluate tasks, you'll use a tool called REBA - Rapid Entire Body Assessment. It helps identify which postures and movements are risky. You'll answer simple questions about the worker's body positions - like how much they bend, reach, or lift. The system will calculate a risk score from 1 (safe) to 15 (very risky). The higher the score, the more urgent it is to fix the posture or bring in support like an exoskeleton.
+
+Virtual Instructor: Watch how the tool breaks down posture. You'll see what body parts are involved, what movements cause strain, and how your answers shape the risk level.
+
+<<toggle_reba_demo Module1MenuBootstrapper false>>
+<<activate_menu Module1MenuBootstrapper>>
+Virtual Instructor: Each of the items in this menu represent a trade. Please select one to proceed. We'll meet again at the site you choose!
+
+<<hide_vi Module1MenuBootstrapper>>
+Virtual Instructor: Good luck!
+===
+
+title: Module1Menu_Repeat
+---
+<<activate_checklist Checklist>>
+
+Virtual Instructor: Please, select a trade station to proceed.
+===
+
+title: Module1Menu_WRL
+---
+<<activate_checklist Checklist>>
+
+Virtual Instructor: Welcome to the Wearable Robotics Lab! You've identified which tasks put the body at risk. Now, let's see how wearable robots can help protect workers.
+
+Virtual Instructor: You'll explore different types of exoskeletons, understand what they do, and try them out on real tasks.
+
+<<activate_wrl Module1MenuBootstrapper>>
+Virtual Instructor: Click on each exoskeleton to learn how it works. Then, pick one you think could improve a task you scored earlier.
+
+<<activate_menu Module1MenuBootstrapper>>
+Virtual Instructor: You may take that exoskeleton to one of the activities you chose earlier. That activity will look different if you bring an exoskeleton with you!
+===
+
+title: Module1Menu_End
+---
+<<activate_checklist Checklist>>
+
+<<activate_wrl Module1MenuBootstrapper>>
+<<activate_menu Module1MenuBootstrapper>>
+Virtual Instructor: You have now completed the core portion of Module 1. You may continue exploring, or press the Blue button to proceed to Module 2.
+===

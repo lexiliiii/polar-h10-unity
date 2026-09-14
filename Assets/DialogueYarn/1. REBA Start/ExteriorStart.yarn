@@ -1,0 +1,33 @@
+﻿title: Start
+---
+<<fade_in SceneFader 5>>
+<<wait 2>>
+<<door_anim AnimationScripts>>
+<<wait 2>>
+<<move_instructor VirtualInstructor 3>>
+<<wait 1.5>>
+
+Virtual Instructor: Welcome to your first day on site! I’m your guide. You’ll learn how construction workers face ergonomic challenges—and how wearable robots can help solve them.
+
+<<activate_checklist Checklist>>
+
+Virtual Instructor: You've already completed Item 1 of the Orientation Checklist just by showing up!
+
+Virutal Instructor: The next item on the checklist is to examine the site office behind me.
+
+Virutal Instructor: Let's go take a look inside. Follow me using the teleport points on the ground.
+
+<<move_instructor VirtualInstructor 8>>
+
+<<wait_until_done VirtualInstructor>>
+
+Virtual Instructor: This is where supervisors plan, monitor progress, and assign tasks. It’s the brain of the construction operation.
+
+<<spawn_button YarnButtonController 0>>
+Virtual Instructor: Please look at the Observation Box in front of you.
+
+<<activate_item2 Checklist>>
+
+<<spawn_button YarnButtonController 1>>
+Virtual Instructor: Construction isn’t just physical labor—it also involves coordination and planning. Now, let’s go meet the workers and observe their tasks in action.
+===

@@ -1,0 +1,35 @@
+﻿title: m1_trade_content
+---
+
+Virtual Instructor: This is the carpentry zone. Carpenters perform a variety of tasks involving awkward postures.
+
+Virtual Instructor: See how the worker cutting timber is bending the wrists repeatedly? This increases wrist strain.
+
+Virtual Instructor: Overhead beam installation puts heavy stress on the shoulder and neck.
+
+Virtual Instructor: Stud framing close to the floor forces the worker into a deep squat, raising back and knee risk.
+
+Virtual Instructor: Try assessing the risk for this worker!
+
+<<activate_checklist Checklist>>
+<<begin_assessment REBAManager>>
+===
+
+title: m1_carpentry_end
+---
+Virtual Instructor: Awesome attempt! Here's a summary of your REBA assessment.
+
+<<show_return_prompt REBAManager>>
+Virtual Instructor: You may use the blue button to return to the Module's Menu.
+===
+
+title: m1_exoskeleton_dialogue
+---
+Virtual Instructor: We are now back at the station, but this time around, you may choose to apply the exoskeleton you chose on a previous screen!
+
+<<show_scoring REBAManager>>
+Virtual Instructor: Here's the REBA assessment you previously submitted.
+
+<<show_exoskeleton_prompt REBAManager>>
+Virtual Instructor: Now, you may press the Blue button to apply the exoskeleton and see how it affects your score.
+===

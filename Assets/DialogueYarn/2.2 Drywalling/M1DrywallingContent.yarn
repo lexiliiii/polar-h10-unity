@@ -1,0 +1,34 @@
+﻿title: m1_trade_content
+---
+Virtual Instructor: Drywallers work both overhead and at awkward angles.
+
+Virtual Instructor: Lifting panels above shoulder height leads to high shoulder load.
+
+Virtual Instructor: Prolonged neck extension while screwing into ceilings contributes to neck discomfort.
+
+Virtual Instructor: Repetitive sanding risks the wrist due to fine control motions.
+
+Virtual Instructor: Try assessing the risk for this worker!
+
+<<activate_checklist Checklist>>
+<<begin_assessment REBAManager>>
+===
+
+title: m1_carpentry_end
+---
+Virtual Instructor: Awesome attempt! Here's a summary of your REBA assessment.
+
+<<show_return_prompt REBAManager>>
+Virtual Instructor: You may use the blue button to return to the Module's Menu.
+===
+
+title: m1_exoskeleton_dialogue
+---
+Virtual Instructor: We are now back at the station, but this time around, you may choose to apply the exoskeleton you chose on a previous screen!
+
+<<show_scoring REBAManager>>
+Virtual Instructor: Here's the REBA assessment you previously submitted.
+
+<<show_exoskeleton_prompt REBAManager>>
+Virtual Instructor: Now, you may press the Blue button to apply the exoskeleton and see how it affects your score.
+===

@@ -1,0 +1,41 @@
+﻿title: Module3_Start
+---
+Virtual Instructor: Welcome to the Implementation Lab. Now, it's your turn to put theory into practice. 
+
+Virtual Instructor: You’ll wear a real exoskeleton, activate your IMU suit, and perform a task in both the physical and virtual world simultaneously. Let’s get started!
+
+Virtual Instructor: First, you'll wear an exoskeleton according to your Lab Instructor. Follow the directions that they provide and confirm when you're fully done.
+
+<<spawn_button UIToggler 4>>
+===
+title: Module3_Sync
+---
+Virtual Instructor: Your avatar is now synced with your movements. Every action you take will be mirrored virtually and analyzed using the sensors you selected earlier.
+
+Virutal Instructor: Now, please select a task to perform.
+<<spawn_button UIToggler 1>>
+===
+title: Module3_TaskExecution
+---
+Virtual Instructor: Task 1 complete. You’ve captured important baseline data without assistive support. Now let’s see how a wearable robot helps.”
+===
+title: Module3_AfterTaskReflection
+---
+Virtual Instructor: Let’s take a moment to reflect. Based on the sensor feedback you received and your task performance, answer the following questions before we move on.
+===
+title: Module3_ExoskeletonQuestion
+---
+Virtual Instructor: Take a moment to decide which type of exoskeleton would be best for this task.
+===
+title: Module3_CorrecExoskeleton
+---
+Virtual Instructor: Good choice. This exoskeleton helps support the body during this type of task.
+===
+title: Module3_IncorrectExoskeletonShoulder
+--- 
+Virtual Instrucotr: You selected a shoulder support exoskeleton, but this task mainly involves lifting heavy objects from the ground. A back support exoskeleton is usually more helpful for lifting tasks. You may continue with your selection or choose a different exoskeleton.
+===
+title: Module3_IncorrectExoskeletonBack
+--- 
+Virtual Instrucotr: You selected a back support exoskeleton, but this task mainly involves doing tasks over your head. A shoulder support exoskeleton is usually more helpful for overhead tasks. You may continue with your selection or choose a different exoskeleton.
+===

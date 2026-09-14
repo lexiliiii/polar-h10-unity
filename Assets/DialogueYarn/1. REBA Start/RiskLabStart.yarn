@@ -1,0 +1,17 @@
+﻿title: RiskLabStart
+---
+<<fade_in GameManager 3>>
+
+Virtual Instructor: Welcome to the Ergonomic Risk Lab. Here, you’ll observe real construction tasks and evaluate their risks using ergonomic tools.
+
+Virtual Instructor: Each station represents a trade. Let’s begin.
+
+// checklist appears briefly
+
+Virtual Instructor: To evaluate tasks, you’ll use a tool called REBA – Rapid Entire Body Assessment. It helps identify which postures and movements are risky.
+
+Virtual Instructor: You’ll answer simple questions about the worker’s body positions—like how much they bend, reach, or lift.
+
+Virtual Instructor: The system will calculate a risk score from 1 (safe) to 15 (very risky). The higher the score, the more urgent it is to fix the posture or bring in support like an exoskeleton.
+
+===

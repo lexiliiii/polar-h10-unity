@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac0c7921db26f542833e8325fae3090, type: 3}
+  m_Name: Wrist
+  m_EditorClassIdentifier: 
+  suitType: 1
+  setID: Wrist
+  bodyMaterial: {fileID: 2100000, guid: 6885015cda7270d4f9d9cc93991deb80, type: 2}
+  handMaterial: {fileID: 2100000, guid: 4e882833a6268eb40972278031fc7234, type: 2}
+  faceMaterial: {fileID: 0}

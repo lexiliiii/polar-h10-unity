@@ -1,0 +1,15 @@
+﻿title: StudentDecisionTaskIntroduction
+---
+Virtual Assistant: Now it’s your turn. Which sensing technologies would you use to measure how well an exoskeleton is working in the field?
+===
+
+title: StudentDecisionTaskClosingMessage
+---
+Virtual Assistant: Great work! You now understand how EEG, EMG, and IMUs help us evaluate how people respond to wearable robots. In the next module, you’ll apply these concepts in a simulated field test.
+Virtual Assistant: You may now exit this scene. You may also complete the final sensor question if you feel inclined to do so.
+===
+
+title: StudentDecisionTaskSecretMessage
+---
+Virtual Assistant: You have now completed all of the questions about the sensors that you were shown today. Great work!
+===

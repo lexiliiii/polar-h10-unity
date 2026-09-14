@@ -1,0 +1,1 @@
+{ "name": "Module3.PolarH10.Tests", "references": ["Module3.PolarH10"], "includePlatforms": ["Editor"], "optionalUnityReferences": ["TestAssemblies"] }

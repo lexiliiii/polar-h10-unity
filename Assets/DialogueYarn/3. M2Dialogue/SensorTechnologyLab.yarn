@@ -1,0 +1,25 @@
+﻿title: SensorLabIntroduction
+---
+<<activate_checklist Checklist>>
+Virtual Instructor: You've seen how wearable robots reduce physical strain. But how do we actually measure their impact on the body and mind? Let's explore the sensing technologies that allow us to study human-robot interaction in real time.
+===
+
+title: SensingLabEEG
+---
+Virtual Instructor: EEG helps us understand what the brain is doing during complex physical tasks. It tells us how much mental strain is involved in using a wearable robot.
+===
+
+title: SensingLabEMG
+---
+Virtual Instructor: EMG tells us how hard the muscles are working. When a wearable robot is effective, we expect to see less muscle activation for the same task.
+===
+
+title: SensingLabIMU
+---
+Virtual Instructor: IMUs help us track how a person moves. They let us see posture changes and determine if the exoskeleton supports better alignment or limits natural movement.
+===
+
+title: SensingLabEnd
+---
+Virtual Instructor: Great work! Now that you have learned about all the sensors, let's move on to how they interact with humans. Please return to where you started to move forward.
+===
