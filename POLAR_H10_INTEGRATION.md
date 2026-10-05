@@ -1,5 +1,7 @@
 # polar-h10-unity
 
+The dashboard now uses the existing 3D worker model and a compact top-right panel. See [redesign and run guide](POLAR_H10_REDESIGN.md) for mapping, setup, verification and limitations. EXG RMS indicates signal amplitude; it does not measure joint motion.
+
 
 ## Run
 

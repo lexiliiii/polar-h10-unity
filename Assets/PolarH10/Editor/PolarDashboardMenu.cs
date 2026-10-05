@@ -24,6 +24,46 @@ namespace Module3.PolarH10.Editor
             go.AddComponent<PolarRmsDashboard>(); Selection.activeGameObject=go;
             EditorSceneManager.MarkSceneDirty(go.scene);
         }
+        // Also callable from Unity batch mode with -executeMethod.
+        [MenuItem("Tools/Polar H10/Configure 3D Dashboard")]
+        public static void Configure()
+        {
+            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            var scene = EditorSceneManager.OpenScene(ScenePath);
+            var dashboard = UnityEngine.Object.FindObjectOfType<PolarRmsDashboard>();
+            var body = dashboard.GetComponent<PolarBodyVisualization>();
+            if (!body) body = dashboard.gameObject.AddComponent<PolarBodyVisualization>();
+            body.humanModel = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Art/Humans/WorkerTPose.fbx");
+            if (!body.humanModel) throw new Exception("Existing WorkerTPose model could not be imported.");
+            body.bodyMaterial = MaterialAsset("PolarBody", "Universal Render Pipeline/Lit", new Color(.32f,.42f,.49f));
+            body.markerMaterial = MaterialAsset("PolarMarker", "Universal Render Pipeline/Unlit", Color.white);
+            if (!GameObject.Find("Polar key light")) {
+                var go = new GameObject("Polar key light");
+                var light = go.AddComponent<Light>(); light.type = LightType.Directional; light.intensity = 1.2f;
+                go.transform.rotation = Quaternion.Euler(35, -35, 0);
+            }
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(.55f,.55f,.55f);
+            EditorSceneManager.SaveScene(scene);
+            // Keep legacy scene entries available but exclude them from this focused application.
+            var scenes = EditorBuildSettings.scenes;
+            foreach (var entry in scenes) entry.enabled = entry.path == ScenePath;
+            EditorBuildSettings.scenes = scenes;
+            PlayerSettings.runInBackground = true;
+            AssetDatabase.SaveAssets();
+            Debug.Log("Polar 3D dashboard configured with existing WorkerTPose model.");
+        }
+        private static Material MaterialAsset(string name, string shaderName, Color color)
+        {
+            string path = "Assets/PolarH10/" + name + ".mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material) return material;
+            var shader = Shader.Find(shaderName);
+            if (!shader) throw new Exception("Required existing URP shader not found: " + shaderName);
+            material = new Material(shader); material.SetColor("_BaseColor", color);
+            AssetDatabase.CreateAsset(material, path);
+            return material;
+        }
         [MenuItem("Tools/Polar H10/Build Windows Dashboard")]
         public static void BuildWindows()
         {

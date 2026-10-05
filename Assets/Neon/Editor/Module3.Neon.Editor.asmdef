@@ -1,0 +1,1 @@
+{ "name": "Module3.Neon.Editor", "references": ["Module3.Neon"], "includePlatforms": ["Editor"] }

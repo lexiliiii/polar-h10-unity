@@ -1,0 +1,2 @@
+# Official Pupil Labs client. Version 1.9.0 supports current 105-byte gaze packets.
+pupil-labs-realtime-api==1.9.0

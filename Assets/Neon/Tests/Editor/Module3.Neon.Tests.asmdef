@@ -1,0 +1,1 @@
+{ "name": "Module3.Neon.Tests", "references": ["Module3.Neon"], "includePlatforms": ["Editor"], "optionalUnityReferences": ["TestAssemblies"] }

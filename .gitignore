@@ -77,3 +77,11 @@ crashlytics-build.properties
 /Assets/Temp.meta
 /Assets/Asset Store/
 /Assets/Asset Store.meta
+
+
+/NEON_DESKTOP_GAZE.md
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
