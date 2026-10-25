@@ -19,6 +19,12 @@ export const BODY_PARTS = [
   "Hip",
   "LThigh",
   "RThigh",
+  "LFrontShoulder",
+  "RFrontShoulder",
+  "LUpperBack",
+  "RUpperBack",
+  "LLowerSpine",
+  "RLowerSpine",
 ];
 
 export const HEART_INDEX = BODY_PARTS.indexOf("Heart");

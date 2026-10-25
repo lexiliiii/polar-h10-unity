@@ -1,1 +1,1 @@
-{ "name": "Module3.PolarH10", "rootNamespace": "Module3.PolarH10" }
+{ "name": "Module3.PolarH10", "rootNamespace": "Module3.PolarH10", "references": ["Unity.TextMeshPro", "UnityEngine.UI"] }

@@ -1,85 +1,95 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
 namespace Module3.PolarH10
 {
+    /// <summary>Sensor value, document rule and immediate feedback. No session or calibration wizard.</summary>
     [RequireComponent(typeof(PolarRmsReceiver))]
     public class PolarRmsDashboard : MonoBehaviour
     {
-        public bool expanded = true;
+        public bool expanded=true;
+        public static readonly Color MissingColor=new Color(.42f,.46f,.51f);
+        public static Color SignalColor(float value)=>Color.Lerp(new Color(.12f,.65f,.72f),new Color(1f,.43f,.15f),value);
         private PolarRmsReceiver receiver;
-        private GUIStyle title, text, small;
-        private string minimum, maximum, rangeError;
-        private bool showRange;
-        public static readonly Color MissingColor = new Color(.42f, .46f, .51f);
-        public static Color SignalColor(float value) => Color.Lerp(new Color(.12f,.65f,.72f), new Color(1f,.43f,.15f), value);
-
+        private PolarThresholdCoach coach;
+        private Vector2 scroll;
+        private GUIStyle heading,small,wrapped;
+        private bool showValues;
+        private string path="",inputStatus="";
+        private readonly Dictionary<string,string[]> inputs=new Dictionary<string,string[]>();
         private void Awake()
         {
-            receiver = GetComponent<PolarRmsReceiver>();
-            minimum = receiver.rmsMinimumUv.ToString(CultureInfo.InvariantCulture);
-            maximum = receiver.rmsMaximumUv.ToString(CultureInfo.InvariantCulture);
-        }
-        private GUIStyle Style(int size, Color color, bool bold = false)
-        {
-            var style = new GUIStyle(GUI.skin.label) { fontSize = size, fontStyle = bold ? FontStyle.Bold : FontStyle.Normal };
-            style.normal.textColor = color;
-            return style;
-        }
-        private static void Fill(Rect rect, Color color)
-        {
-            var previous = GUI.color; GUI.color = color;
-            GUI.DrawTexture(rect, Texture2D.whiteTexture); GUI.color = previous;
+            receiver=GetComponent<PolarRmsReceiver>();
+            // An older manually saved component must not compete for the learner prompt.
+            var previous=GetComponent<PolarCoachingSession>();if(previous)previous.enabled=false;
+            coach=GetComponent<PolarThresholdCoach>();if(!coach)coach=gameObject.AddComponent<PolarThresholdCoach>();
         }
         private void OnGUI()
         {
-            if (title == null) {
-                title = Style(18, Color.white, true);
-                text = Style(14, new Color(.9f,.94f,.97f));
-                small = Style(12, new Color(.7f,.77f,.82f));
+            if(!coach)return;
+            if(heading==null){heading=new GUIStyle(GUI.skin.label){fontSize=18,fontStyle=FontStyle.Bold};small=new GUIStyle(GUI.skin.label){fontSize=12,wordWrap=true};wrapped=new GUIStyle(GUI.skin.label){fontSize=14,wordWrap=true};}
+            float width=Mathf.Min(440,Screen.width-24);
+            GUILayout.BeginArea(new Rect(Screen.width-width-12,12,width,expanded?Screen.height-24:44),GUI.skin.box);
+            GUILayout.BeginHorizontal();GUILayout.Label("Polar H10 · Muscle Effort",heading);if(GUILayout.Button(expanded?"−":"+",GUILayout.Width(28)))expanded=!expanded;GUILayout.EndHorizontal();
+            if(expanded){
+                scroll=GUILayout.BeginScrollView(scroll);
+                GUILayout.Label("Live readings → document threshold → prompt",small);
+                GUILayout.BeginHorizontal();
+                bool overhead=GUILayout.Toggle(coach.setup=="Overhead","Overhead",GUI.skin.button);
+                bool bending=GUILayout.Toggle(coach.setup=="Bending","Bending",GUI.skin.button);
+                GUILayout.EndHorizontal();
+                if(overhead && coach.setup!="Overhead")coach.ConfigureSetup("Overhead",coach.includeForearms);
+                else if(bending && coach.setup!="Bending")coach.ConfigureSetup("Bending");
+                if(coach.setup=="Overhead"){
+                    bool forearms=GUILayout.Toggle(coach.includeForearms,"Include optional forearm sensors");
+                    if(forearms!=coach.includeForearms)coach.ConfigureSetup("Overhead",forearms);
+                }
+                foreach(var pair in PolarCoachingRules.Channels){
+                    string id=pair.Key;var rule=pair.Value;var region=Array.Find(receiver.regions,r=>r.id==id);
+                    if(!coach.ActiveSetupChannel(id))continue;
+                    double percent=coach.Percent(id);bool live=region!=null&&receiver.IsLive(region);
+                    GUILayout.BeginVertical(GUI.skin.box);GUILayout.BeginHorizontal();
+                    var color=GUI.color;GUI.color=coach.ColorFor(id);GUILayout.Label("●",GUILayout.Width(20));GUI.color=color;
+                    GUILayout.Label(rule.label,wrapped);GUILayout.Label(!double.IsNaN(percent)?percent.ToString("0.##")+"% MVIC · "+coach.Level(id):live?region.rmsUv.ToString("0.##")+" µV":"—",small);
+                    GUILayout.EndHorizontal();
+                    GUILayout.Label(rule.corrective?"High: >"+rule.highThreshold+"% for >"+rule.highHoldMs/1000+" s · Moderate: "+rule.moderateThreshold+"–"+rule.highThreshold+"% for >30 s":"Thigh: colors only; no corrective prompt.",small);
+                    if(live && double.IsNaN(percent))GUILayout.Label(rule.requiresEcgBlanking&&!region.ecgBlanked?"Waiting for heartbeat-cleaned RMS.":"%MVIC needs this sensor's rest/max values.",small);
+                    foreach(var message in coach.Messages)if(message.channel==id)GUILayout.Label(message.text,wrapped);
+                    GUILayout.EndVertical();
+                }
+                GUILayout.Label("Trapezius: no qualifying rest for >90 s. Rest gaps: ≥0.2 s. Conditions met → immediate prompt; below the rule → silence.",small);
+                showValues=GUILayout.Toggle(showValues,"Rest/max values (for µV → %MVIC only)");
+                if(showValues)Values();
+                GUILayout.Label("Sources agree on effort thresholds. File B permits 4 overhead sensors or 6 with forearms; only connected locations are shown on the body.",small);
+                GUILayout.EndScrollView();
             }
-            // Fixed readable logical size at desktop resolutions; shrink only to fit small windows.
-            float height = expanded ? (showRange ? 358 : 274) : 42;
-            float scale = Mathf.Min(1f, Mathf.Min(Screen.width / 368f, Screen.height / (height + 24)));
-            var previous = GUI.matrix;
-            GUI.matrix = Matrix4x4.TRS(new Vector3(Screen.width - 356 * scale, 12 * scale), Quaternion.identity, new Vector3(scale,scale,1));
-            try {
-                Fill(new Rect(0,0,344,height), new Color(.035f,.055f,.085f,.96f));
-                GUI.Label(new Rect(12,8,260,28), "POLAR H10  /  EXG", title);
-                if (GUI.Button(new Rect(304,8,28,26), expanded ? "−" : "+")) expanded = !expanded;
-                if (!expanded) return;
-                GUI.Label(new Rect(12,38,320,22), "200 ms RMS · amplitude, not joint motion", small);
-                int liveCount = 0;
-                for (int i=0; i<receiver.regions.Length; i++) {
-                    var region = receiver.regions[i];
-                    bool live = receiver.IsLive(region); if (live) liveCount++;
-                    float y = 66 + i*39;
-                    Color color = live ? SignalColor(receiver.Normalized(region)) : MissingColor;
-                    Fill(new Rect(12,y+5,7,19),color);
-                    GUI.Label(new Rect(26,y,135,24),region.label,text);
-                    GUI.Label(new Rect(162,y,100,24),live ? region.rmsUv.ToString("F1")+" µV" : "— µV",text);
-                    GUI.Label(new Rect(264,y+2,72,22),live ? "LIVE" : region.timestampMs>0 ? "STALE" : "WAITING",small);
-                    Fill(new Rect(26,y+27,304,3), new Color(.15f,.2f,.25f));
-                    if(live) Fill(new Rect(26,y+27,304*receiver.Normalized(region),3),color);
+            GUILayout.EndArea();
+        }
+        private void Values()
+        {
+            GUILayout.Label("Load existing values, or enter each connected sensor's measured rest, restSD and max in µV. No recording steps or session start.",small);
+            path=GUILayout.TextField(path);
+            if(GUILayout.Button("Load values from JSON")){coach.TryLoad(path);inputs.Clear();}
+            foreach(var pair in PolarCoachingRules.Channels){
+                string id=pair.Key;var region=Array.Find(receiver.regions,r=>r.id==id);
+                if(!coach.ActiveSetupChannel(id))continue;
+                if(region==null || !receiver.IsLive(region))continue;
+                if(!inputs.TryGetValue(id,out var fields)){
+                    var c=coach.Calibration(id);fields=c!=null&&c.status=="OK"?new[]{c.rest.ToString("R",CultureInfo.InvariantCulture),c.restSD.ToString("R",CultureInfo.InvariantCulture),c.max.ToString("R",CultureInfo.InvariantCulture)}:new[]{"","",""};inputs[id]=fields;
                 }
-                GUI.Label(new Rect(12,223,320,22), $"{liveCount}/4 live · Gray = no current data", small);
-                if(GUI.Button(new Rect(12,246,320,22),$"Range {receiver.rmsMinimumUv:G}–{receiver.rmsMaximumUv:G} µV  ▾")) showRange=!showRange;
-                if(showRange) {
-                    GUI.Label(new Rect(12,276,30,24),"Min",small);
-                    minimum=GUI.TextField(new Rect(43,276,67,24),minimum,10);
-                    GUI.Label(new Rect(117,276,30,24),"Max",small);
-                    maximum=GUI.TextField(new Rect(150,276,67,24),maximum,10);
-                    if(GUI.Button(new Rect(225,276,107,24),"Apply range")) {
-                        if(float.TryParse(minimum,NumberStyles.Float,CultureInfo.InvariantCulture,out float min)
-                            && float.TryParse(maximum,NumberStyles.Float,CultureInfo.InvariantCulture,out float max)
-                            && !float.IsInfinity(min) && !float.IsInfinity(max) && min>=0 && max>min) {
-                            receiver.rmsMinimumUv=min; receiver.rmsMaximumUv=max; rangeError=null;
-                        } else rangeError="Use finite values with 0 ≤ Min < Max.";
-                    }
-                    GUI.Label(new Rect(12,304,320,22),rangeError ?? receiver.Status,small);
-                    GUI.Label(new Rect(12,329,320,22),"Display range only; measured RMS is unchanged.",small);
+                GUILayout.Label(id+" · rest / restSD / max",small);GUILayout.BeginHorizontal();
+                for(int i=0;i<3;i++)fields[i]=GUILayout.TextField(fields[i],GUILayout.MinWidth(45));
+                if(GUILayout.Button("Apply",GUILayout.Width(55))){
+                    try {
+                        var c=new PolarChannelCalibration{channel=id,status="OK",rest=double.Parse(fields[0],CultureInfo.InvariantCulture),restSD=double.Parse(fields[1],CultureInfo.InvariantCulture),max=double.Parse(fields[2],CultureInfo.InvariantCulture)};
+                        coach.SetCalibration(c);inputStatus=id+" values applied.";
+                    } catch(Exception e){inputStatus=e.Message;}
                 }
-            } finally { GUI.matrix=previous; }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.Label(inputStatus.Length>0?inputStatus:coach.Status,small);
         }
     }
 }

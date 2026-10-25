@@ -4,7 +4,7 @@ Unity 2022.3.56f1 project containing two independent live-sensor integrations:
 
 - **Pupil Labs Neon:** live gaze-only samples drive a red UI cursor in the Unity
   Game view. Scene/world-camera video is not requested.
-- **Polar H10:** live EXG RMS values drive the body-region dashboard.
+- **Polar H10:** calibrated EXG effort drives the localhost rule dashboard, Unity body-region visualization, and learner coaching.
 
 ## Neon quick start
 
@@ -29,9 +29,8 @@ Start the supplied bridge:
 node Tools/PolarH10Bridge/server.mjs
 ```
 
-Open `http://localhost:8080`, connect the H10, enable EXG, and then choose
-**Tools > Polar H10 > Open Dashboard Scene** in Unity. See
-[Polar H10 integration](POLAR_H10_INTEGRATION.md) for the complete workflow.
+Open `http://localhost:8080`, connect the H10, select its body location, and enable EXG. Open the separate rule dashboard at `http://localhost:8081` for Overhead/Bending selection, manual rest/restSD/max entry, JSON import/export, %MVIC status, and direct prompts without requiring Unity. To also use the 3D body view, choose **Tools > Polar H10 > Open Dashboard Scene** in Unity. See
+[Polar H10 integration](POLAR_H10_INTEGRATION.md) for direct threshold prompts, source rules, and the required µV-to-%MVIC conversion.
 
 The two integration documents above are the canonical project instructions.
 README files under `node_modules`, imported packages, or Asset Store assets belong

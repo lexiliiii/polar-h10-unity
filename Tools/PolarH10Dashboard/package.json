@@ -1,0 +1,8 @@
+{
+  "name": "polar-h10-rule-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ../PolarH10Visualizer/node_modules/esbuild/bin/esbuild src/app.ts --bundle --outfile=build/app.js --format=esm --sourcemap"
+  }
+}

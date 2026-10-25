@@ -1,0 +1,163 @@
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("/fonts/roboto-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("/fonts/roboto-mono-bold.woff2") format("woff2");
+  font-weight: 700;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: "Roboto Mono", ui-monospace, monospace;
+  background: #070a0f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(16px, 4vw, 48px);
+  color: #edf4fb;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(41, 189, 208, .14), transparent 30rem),
+    radial-gradient(circle at 85% 88%, rgba(25, 98, 164, .12), transparent 34rem),
+    #070a0f;
+}
+
+button, input { font: inherit; }
+
+#polar-rule-dashboard {
+  --panel: #151b24;
+  --border: #303a48;
+  --muted: #91a0b4;
+  --cyan: #64d8e8;
+  width: min(880px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(10, 14, 20, .95);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .52);
+}
+
+#polar-rule-dashboard [hidden] { display: none !important; }
+#polar-rule-dashboard.is-collapsed .prd-body { display: none; }
+
+.prd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(53, 215, 231, .12), transparent 58%);
+}
+
+.prd-header h2 { margin: 4px 0 0; color: #fff; font-size: clamp(23px, 4vw, 32px); line-height: 1; }
+.prd-eyebrow { color: var(--cyan); font-size: 10px; font-weight: 700; letter-spacing: .18em; }
+
+.prd-icon-button {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: #dce7f2;
+  background: #202936;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.prd-body { padding: clamp(16px, 3vw, 26px); }
+
+.prd-bridge-row { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
+.prd-status-dot { width: 9px; height: 9px; border-radius: 50%; background: #697586; box-shadow: 0 0 0 4px rgba(105, 117, 134, .12); }
+.bridge-online .prd-status-dot { background: #43d58b; box-shadow: 0 0 0 4px rgba(67, 213, 139, .12), 0 0 14px rgba(67, 213, 139, .5); }
+.prd-flow { margin: 12px 0 18px; color: #aeb9c8; font-size: 11px; }
+.prd-flow span { color: var(--cyan); }
+
+.prd-segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: #080c12;
+}
+
+.prd-segmented button,
+.prd-value-actions button,
+.prd-calibration-row button {
+  border: 0;
+  border-radius: 8px;
+  color: #aeb9c8;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.prd-segmented button { padding: 12px; }
+.prd-segmented button.is-active { color: #061116; background: var(--cyan); }
+.prd-check { display: flex; align-items: center; gap: 8px; margin: 13px 3px 17px; color: #b8c3d0; font-size: 11px; }
+.prd-check input { accent-color: var(--cyan); }
+
+.prd-prompt {
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid rgba(255, 89, 89, .6);
+  border-left-width: 4px;
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(121, 25, 31, .32);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.prd-prompt > div + div { margin-top: 8px; }
+.prd-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.prd-card { padding: 14px; border: 1px solid var(--border); border-radius: 11px; background: var(--panel); }
+.prd-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.prd-card-top strong { color: #dfe8f2; font-size: 11px; text-align: right; }
+.prd-card-identity { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12px; font-weight: 700; text-transform: capitalize; }
+.prd-level-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: #6b7583; }
+.level-rest .prd-level-dot, .level-low .prd-level-dot { background: #40cc78; box-shadow: 0 0 10px rgba(64, 204, 120, .45); }
+.level-moderate .prd-level-dot { background: #ffb827; box-shadow: 0 0 10px rgba(255, 184, 39, .45); }
+.level-high .prd-level-dot { background: #f34d5a; box-shadow: 0 0 10px rgba(243, 77, 90, .55); }
+
+.prd-rule, .prd-hint, .prd-card-message, .prd-footnote, .prd-values-panel > p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.prd-hint { color: #f2c86f; }
+.prd-card-message { color: #ff9da5; }
+.prd-values-toggle { width: 100%; display: flex; justify-content: space-between; margin-top: 16px; padding: 13px 2px; border: 0; border-top: 1px solid var(--border); color: #dce6f0; background: transparent; font-weight: 700; cursor: pointer; }
+.prd-values-panel { padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.prd-value-actions { display: flex; gap: 8px; margin: 12px 0; }
+.prd-value-actions button, .prd-calibration-row button[data-action="apply"] { padding: 9px 12px; color: #d9e8f3; background: #253142; border: 1px solid #39475b; }
+.prd-calibration-row { display: grid; grid-template-columns: 1.35fr repeat(3, minmax(0, .75fr)) auto auto; gap: 6px; align-items: center; margin-top: 7px; }
+.prd-calibration-label { color: #c8d3de; font-size: 10px; overflow: hidden; text-overflow: ellipsis; }
+.prd-calibration-row input { min-width: 0; width: 100%; padding: 8px; border: 1px solid #354154; border-radius: 7px; color: #f4f8fb; background: #0d1219; font-size: 11px; }
+.prd-calibration-row .prd-clear { padding: 4px; color: #eb8188; font-size: 18px; }
+.prd-inline-status { min-height: 16px; margin-top: 9px; color: #77dce6; font-size: 10px; }
+.prd-footnote { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+@media (max-width: 720px) {
+  body { padding: 10px; }
+  #polar-rule-dashboard { border-radius: 13px; }
+  .prd-header { padding: 16px; }
+  .prd-body { padding: 14px; }
+  .prd-cards { grid-template-columns: 1fr; }
+  .prd-calibration-row { grid-template-columns: 1fr repeat(3, minmax(0, .7fr)); }
+  .prd-calibration-row button { grid-column: span 2; }
+}

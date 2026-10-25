@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Module3.PolarH10
 {
-    /// <summary>Four RMS markers on a reference pose. No motion or pose is inferred from EXG.</summary>
+    /// <summary>Calibrated effort markers on a reference pose. No motion or pose is inferred from EXG.</summary>
     [RequireComponent(typeof(PolarRmsReceiver))]
     public class PolarBodyVisualization : MonoBehaviour
     {
@@ -11,11 +11,12 @@ namespace Module3.PolarH10
         public Material bodyMaterial;
         public Material markerMaterial;
         public string[] boneNames = { "Bip01 L UpperArm", "Bip01 R UpperArm", "Bip01 Spine1", "Bip01 Spine" };
-        private static readonly string[] RegionIds = { "LShoulder", "RShoulder", "MiddleSpine", "LowerSpine" };
+        private static readonly string[] RegionIds = { "LShoulder", "RShoulder", "MiddleSpine", "LowerSpine", "LLowerSpine", "RLowerSpine", "LUpperBack", "RUpperBack", "LFrontShoulder", "RFrontShoulder", "LLowerArm", "RLowerArm", "LThigh", "RThigh" };
+        private PolarThresholdCoach coach;
         private PolarRmsReceiver receiver;
-        private readonly Transform[] anchors = new Transform[4];
-        private readonly Transform[] markers = new Transform[4];
-        private readonly Renderer[] renderers = new Renderer[4];
+        private readonly Transform[] anchors = new Transform[14];
+        private readonly Transform[] markers = new Transform[14];
+        private readonly Renderer[] renderers = new Renderer[14];
         private MaterialPropertyBlock properties;
         private GameObject model;
         private Camera bodyCamera;
@@ -31,6 +32,7 @@ namespace Module3.PolarH10
         private void Start()
         {
             receiver=GetComponent<PolarRmsReceiver>();
+            coach=GetComponent<PolarThresholdCoach>();
             properties=new MaterialPropertyBlock();
             if(!humanModel || !bodyMaterial || !markerMaterial) {
                 SetupStatus="Assign a human model and visualization materials in the Inspector.";
@@ -64,7 +66,12 @@ namespace Module3.PolarH10
             // Derive the posterior view from anatomical left/right, independent of FBX facing axis.
             back=Vector3.Cross(Vector3.up, anchors[1].position-anchors[0].position).normalized;
             if(back.sqrMagnitude<.5f) { SetupStatus="Cannot determine model posterior direction."; return; }
-            for(int i=0;i<4;i++) {
+            for(int i=4;i<RegionIds.Length;i++) {
+                string side=RegionIds[i][0]=='L'?"L":"R";
+                string bone=RegionIds[i].Contains("Thigh")?"Bip01 "+side+" Thigh":RegionIds[i].Contains("LowerArm")?"Bip01 "+side+" Forearm":RegionIds[i].Contains("LowerSpine")?boneNames[3]:RegionIds[i].Contains("UpperBack")?boneNames[2]:"Bip01 "+side+" UpperArm";
+                anchors[i]=Array.Find(bones,t=>t.name==bone) ?? anchors[RegionIds[i][0]=='L'?0:1];
+            }
+            for(int i=0;i<RegionIds.Length;i++) {
                 var marker=GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 marker.name=RegionIds[i]+" RMS";
                 marker.transform.SetParent(transform);
@@ -89,30 +96,36 @@ namespace Module3.PolarH10
         {
             if(!bodyCamera) return;
             // Reserve the panel area on landscape screens; keep the body centered below it on portrait screens.
-            float panelWidth=Mathf.Min(368,Screen.width*.45f);
+            float panelWidth=Mathf.Min(464,Screen.width*.45f);
             bodyCamera.rect=Screen.width>=900 ? new Rect(0,0,1-panelWidth/Screen.width,1) : new Rect(0,0,1,Mathf.Max(.25f,1-290f/Screen.height));
             float horizontalRadius=0;
             Vector3 right=bodyCamera.transform.right;
             var e=bounds.extents;
             horizontalRadius=Mathf.Abs(right.x)*e.x+Mathf.Abs(right.y)*e.y+Mathf.Abs(right.z)*e.z;
             bodyCamera.orthographicSize=Mathf.Max(bodyHeight*.58f, horizontalRadius*1.12f/Mathf.Max(.1f,bodyCamera.aspect));
-            for(int i=0;i<4;i++) {
+            for(int i=0;i<RegionIds.Length;i++) {
+                bool active=coach && coach.ActiveChannel(RegionIds[i]);
+                markers[i].gameObject.SetActive(active);
+                if(!active) continue;
                 var region=Array.Find(receiver.regions,r=>r.id==RegionIds[i]);
                 bool live=region!=null && receiver.IsLive(region);
-                float value=live ? receiver.Normalized(region) : 0;
+                double percent=coach.Percent(RegionIds[i]);
+                float value=double.IsNaN(percent)?0:Mathf.Clamp01((float)percent/100);
                 // Overlay on the posterior bounding plane to keep every anatomical marker visible.
                 float depth=Mathf.Abs(back.x)*bounds.extents.x+Mathf.Abs(back.z)*bounds.extents.z;
                 Vector3 p=anchors[i].position;
+                if(i>=4 && (RegionIds[i].Contains("LowerSpine") || RegionIds[i].Contains("UpperBack"))) p+=bodyCamera.transform.right*(RegionIds[i][0]=='L'?-1:1)*bodyHeight*.045f;
+                if(RegionIds[i].Contains("FrontShoulder")) p+=Vector3.down*bodyHeight*.045f;
                 markers[i].position=p+back*(depth-Vector3.Dot(p-center,back)+bodyHeight*.025f);
                 markers[i].localScale=Vector3.one*bodyHeight*(.027f+.018f*value);
-                Color color=live ? PolarRmsDashboard.SignalColor(value) : PolarRmsDashboard.MissingColor;
+                Color color=coach.ColorFor(RegionIds[i]);
                 properties.SetColor("_BaseColor",color); properties.SetColor("_Color",color);
                 renderers[i].SetPropertyBlock(properties);
             }
         }
         private void OnGUI()
         {
-            GUI.Label(new Rect(16,Screen.height-48,Screen.width-32,44),SetupStatus ?? "POSTERIOR VIEW · Reference pose\nMarker color / size = EXG RMS amplitude; no joint motion measured.");
+            GUI.Label(new Rect(16,Screen.height-48,Screen.width-32,44),SetupStatus ?? "Back view · L                                      R\nMuscle Effort · % of max; reference pose, no joint motion measured.");
         }
         private void OnDestroy()
         {
